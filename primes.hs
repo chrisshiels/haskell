@@ -13,7 +13,7 @@ notfactorof x y = y `mod` x /= 0
 
 sieve :: Integral a => [ a ] -> [ a ]
 sieve [] = []
-sieve (x:xs) = [ x ] ++ (sieve . filter (notfactorof x) $ xs)
+sieve (x:xs) =  x : (sieve . filter (notfactorof x) $ xs)
 
 
 primes :: Int -> IO ExitCode

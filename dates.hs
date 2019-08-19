@@ -23,4 +23,4 @@ main :: IO ExitCode
 main = date1 >>= putStrLn >>
        date2 >>= putStrLn >>
        date3 >>= putStrLn >>
-       exitWith ExitSuccess
+       exitSuccess

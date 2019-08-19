@@ -14,18 +14,18 @@ data Address = Address Main.Word Main.Bits deriving (Show)
 
 stringtoaddressregexp :: String -> Either String [ String ]
 stringtoaddressregexp s =
-    case (s =~ "^([0-9]+)\\.([0-9]+)\\.([0-9]+)\\.([0-9]+)/([0-9]+)$") of
+    case s =~ "^([0-9]+)\\.([0-9]+)\\.([0-9]+)\\.([0-9]+)/([0-9]+)$" of
         []      -> Left "Bad address"
         [ xs ]  -> Right xs
 
 
 stringtoaddressread :: [ String ] -> Either String (Int, Int, Int, Int, Int)
 stringtoaddressread []                   = Left "Bad address"
-stringtoaddressread [ _, a, b, c, d, n ] = Right ((read a :: Int),
-                                                  (read b :: Int),
-                                                  (read c :: Int),
-                                                  (read d :: Int),
-                                                  (read n :: Int))
+stringtoaddressread [ _, a, b, c, d, n ] = Right (read a :: Int,
+                                                  read b :: Int,
+                                                  read c :: Int,
+                                                  read d :: Int,
+                                                  read n :: Int)
 
 
 stringtoaddressverify ::
@@ -61,7 +61,7 @@ addresstostring (Address w b) = show (shift w (-24)) ++ "." ++
 
 
 networkaddress :: Address -> Address
-networkaddress (Address w b) = Address (w .&. (shift (2 ^ b - 1) (32 - b))) b
+networkaddress (Address w b) = Address (w .&. shift (2 ^ b - 1) (32 - b)) b
 
 
 broadcastaddress :: Address -> Address
@@ -96,7 +96,7 @@ usage e = putStrLn "Usage:  ipcalc a.b.c.d/n [ m ]" >>
 app :: [ String ] -> IO ExitCode
 app [ "--help" ] = usage ExitSuccess
 app []           = usage ExitSuccess
-app [ s ]        = case (stringtoaddress s) of
+app [ s ]        = case stringtoaddress s of
                        (Left message)  -> putStrLn ("Error:  " ++ message) >>
                                           return (ExitFailure 1)
                        (Right address) -> addressdetails address
