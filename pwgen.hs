@@ -13,7 +13,7 @@ chars = ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']
 randomchars :: Int -> String -> StdGen -> String
 randomchars n s g = take n .
                     map (s !!) .
-                    randomRs (0, (length s - 1)) $
+                    randomRs (0, length s - 1) $
                     g
 
 
