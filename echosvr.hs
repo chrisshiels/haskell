@@ -7,6 +7,7 @@ import Network.Socket
 import Network.Socket.ByteString
 import System.Environment
 import System.Exit
+import Text.Read
 
 
 getsocket :: PortNumber -> IO Socket
@@ -48,7 +49,9 @@ usage e = Prelude.putStrLn "Usage:  echosvr [ port ]" >>
 app :: [ String ] -> IO ExitCode
 app [ "--help" ] = usage ExitSuccess
 app []           = echosvr 7777
-app [ s ]        = echosvr (read s :: PortNumber)
+app [ n ]        = case readMaybe n :: Maybe PortNumber of
+                   Just n  -> echosvr n
+                   Nothing -> usage (ExitFailure 1)
 app _            = usage (ExitFailure 1)
 
 
