@@ -30,8 +30,8 @@ app :: [ String ] -> IO ExitCode
 app [ "--help" ] = usage ExitSuccess
 app []           = usage ExitSuccess
 app [ n ]        = case readMaybe n :: Maybe Int of
-                       Just n  -> fizzbuzzer n
-                       Nothing -> usage (ExitFailure 1)
+                   Just n  -> fizzbuzzer n
+                   Nothing -> usage (ExitFailure 1)
 app _            = usage (ExitFailure 1)
 
 
