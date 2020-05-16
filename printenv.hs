@@ -8,7 +8,7 @@ import System.Exit
 
 
 getenvironmentall :: IO [ (String, String) ]
-getenvironmentall = getEnvironment 
+getenvironmentall = getEnvironment
 
 
 sorttuples :: [ (String, String) ] -> [ (String, String) ]
