@@ -224,6 +224,11 @@ listmapsize :: ListMap a b -> Int
 listmapsize listmap = listmapfold (\a _ -> a + 1) 0 listmap
 
 
+instance Functor (ListMap a) where
+  -- fmap :: (a -> b) -> f a -> f b
+  fmap = listmapmap
+
+
 data TreeMap a b = TreeMapNil | TreeMapData a b (TreeMap a b) (TreeMap a b)
                    deriving (Eq, Show)
 
@@ -303,6 +308,11 @@ treemapmap f (TreeMapData key value left right) =
 
 treemapsize :: TreeMap a b -> Int
 treemapsize treemap = treemapfold (\a _ -> a + 1) 0 treemap
+
+
+instance Functor (TreeMap a) where
+  -- fmap :: (a -> b) -> f a -> f b
+  fmap = treemapmap
 
 
 class Map m where
