@@ -10,9 +10,23 @@ filter' f (x:xs) = if f x
                    else filter' f xs
 
 
+-- foldl'
+-- - fold the list from left-to-right.
+-- - tail recursive.
+-- *Main> foldl' (-) 0 [1..4]
+-- -10
 foldl' :: (b -> a -> b) -> b -> [a] -> b
-foldl' _ a [] = a
-foldl' f a (x:xs) = foldl' f (f a x) xs
+foldl' f v [] = v
+foldl' f v (x:xs) = foldl' f (f v x) xs
+
+
+-- foldr'
+-- - fold the list from right-to-left.
+-- *Main> foldr' (-) 0 [1..4]
+-- -2
+foldr' :: (a -> b -> b) -> b -> [a] -> b
+foldr' f v [] = v
+foldr' f v (x:xs) = f x (foldr' f v xs)
 
 
 zip' :: [a] -> [b] -> [ (a, b) ]
