@@ -237,6 +237,14 @@ listmaptopairs ListMapNil = []
 listmaptopairs (ListMapData key value next) = (key, value) : listmaptopairs next
 
 
+listmapkeys :: ListMap a b -> [a]
+listmapkeys t = map fst (listmaptopairs t)
+
+
+listmapvalues :: ListMap a b -> [b]
+listmapvalues t = map snd (listmaptopairs t)
+
+
 listmapfoldl :: (c -> b -> c) -> c -> ListMap a b -> c
 listmapfoldl _ v ListMapNil = v
 listmapfoldl f v (ListMapData key value next) = listmapfoldl f (f v value) next
@@ -329,6 +337,14 @@ treemaptopairs (TreeMapData key value left right) =
   treemaptopairs left ++ [ (key, value) ] ++ treemaptopairs right
 
 
+treemapkeys :: TreeMap a b -> [a]
+treemapkeys t = map fst (treemaptopairs t)
+
+
+treemapvalues :: TreeMap a b -> [b]
+treemapvalues t = map snd (treemaptopairs t)
+
+
 treemapfoldl :: (c -> b -> c) -> c -> TreeMap a b -> c
 treemapfoldl _ v TreeMapNil = v
 treemapfoldl f v (TreeMapData key value left right) =
@@ -373,6 +389,8 @@ class Map m where
   mapdelete :: Ord a => m a b -> a -> m a b
   mapfrompairs :: Ord a => [(a, b)] -> m a b
   maptopairs :: m a b -> [(a, b)]
+  mapkeys :: m a b -> [a]
+  mapvalues :: m a b -> [b]
   mapfoldl :: (c -> b -> c) -> c -> m a b -> c
   mapfoldr:: (b -> c -> c) -> c -> m a b -> c
   mapmap :: (b -> c) -> m a b -> m a c
@@ -385,6 +403,8 @@ instance Map ListMap where
   mapdelete = listmapdelete
   mapfrompairs = listmapfrompairs
   maptopairs = listmaptopairs
+  mapkeys = listmapkeys
+  mapvalues = listmapvalues
   mapfoldl = listmapfoldl
   mapfoldr = listmapfoldr
   mapmap = listmapmap
@@ -397,6 +417,8 @@ instance Map TreeMap where
   mapdelete = treemapdelete
   mapfrompairs = treemapfrompairs
   maptopairs = treemaptopairs
+  mapkeys = treemapkeys
+  mapvalues = treemapvalues
   mapfoldl = treemapfoldl
   mapfoldr= treemapfoldr
   mapmap = treemapmap
