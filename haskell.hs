@@ -237,9 +237,14 @@ listmaptopairs ListMapNil = []
 listmaptopairs (ListMapData key value next) = (key, value) : listmaptopairs next
 
 
-listmapfold :: (c -> b -> c) -> c -> ListMap a b -> c
-listmapfold _ a ListMapNil = a
-listmapfold f a (ListMapData key value next) = listmapfold f (f a value) next
+listmapfoldl :: (c -> b -> c) -> c -> ListMap a b -> c
+listmapfoldl _ v ListMapNil = v
+listmapfoldl f v (ListMapData key value next) = listmapfoldl f (f v value) next
+
+
+listmapfoldr :: (b -> c -> c) -> c -> ListMap a b -> c
+listmapfoldr _ v ListMapNil = v
+listmapfoldr f v (ListMapData key value next) = f value (listmapfoldr f v next)
 
 
 listmapmap :: (b -> c) -> ListMap a b -> ListMap a c
@@ -249,7 +254,12 @@ listmapmap f (ListMapData key value next) =
 
 
 listmapsize :: ListMap a b -> Int
-listmapsize listmap = listmapfold (\a _ -> a + 1) 0 listmap
+listmapsize listmap = listmapfoldl (\a _ -> a + 1) 0 listmap
+
+
+instance Foldable (ListMap a) where
+  foldl = listmapfoldl
+  foldr = listmapfoldr
 
 
 instance Functor (ListMap a) where
@@ -319,13 +329,22 @@ treemaptopairs (TreeMapData key value left right) =
   treemaptopairs left ++ [ (key, value) ] ++ treemaptopairs right
 
 
-treemapfold :: (c -> b -> c) -> c -> TreeMap a b -> c
-treemapfold _ a TreeMapNil = a
-treemapfold f a (TreeMapData key value left right) =
-  let aleft = treemapfold f a left
+treemapfoldl :: (c -> b -> c) -> c -> TreeMap a b -> c
+treemapfoldl _ v TreeMapNil = v
+treemapfoldl f v (TreeMapData key value left right) =
+  let aleft = treemapfoldl f v left
       acurrent = f aleft value
-      aright = treemapfold f acurrent right
+      aright = treemapfoldl f acurrent right
   in aright
+
+
+treemapfoldr :: (b -> c -> c) -> c -> TreeMap a b -> c
+treemapfoldr _ v TreeMapNil = v
+treemapfoldr f v (TreeMapData key value left right) =
+  let aright = treemapfoldr f v right
+      acurrent = f value aright
+      aleft = treemapfoldr f acurrent left
+  in aleft
 
 
 treemapmap :: (b -> c) -> TreeMap a b -> TreeMap a c
@@ -335,7 +354,12 @@ treemapmap f (TreeMapData key value left right) =
 
 
 treemapsize :: TreeMap a b -> Int
-treemapsize treemap = treemapfold (\a _ -> a + 1) 0 treemap
+treemapsize treemap = treemapfoldl (\a _ -> a + 1) 0 treemap
+
+
+instance Foldable (TreeMap a) where
+  foldl = treemapfoldl
+  foldr = treemapfoldr
 
 
 instance Functor (TreeMap a) where
@@ -349,7 +373,8 @@ class Map m where
   mapdelete :: Ord a => m a b -> a -> m a b
   mapfrompairs :: Ord a => [(a, b)] -> m a b
   maptopairs :: m a b -> [(a, b)]
-  mapfold :: (c -> b -> c) -> c -> m a b -> c
+  mapfoldl :: (c -> b -> c) -> c -> m a b -> c
+  mapfoldr:: (b -> c -> c) -> c -> m a b -> c
   mapmap :: (b -> c) -> m a b -> m a c
   mapsize :: m a b -> Int
 
@@ -360,7 +385,8 @@ instance Map ListMap where
   mapdelete = listmapdelete
   mapfrompairs = listmapfrompairs
   maptopairs = listmaptopairs
-  mapfold = listmapfold
+  mapfoldl = listmapfoldl
+  mapfoldr = listmapfoldr
   mapmap = listmapmap
   mapsize = listmapsize
 
@@ -371,7 +397,8 @@ instance Map TreeMap where
   mapdelete = treemapdelete
   mapfrompairs = treemapfrompairs
   maptopairs = treemaptopairs
-  mapfold = treemapfold
+  mapfoldl = treemapfoldl
+  mapfoldr= treemapfoldr
   mapmap = treemapmap
   mapsize = treemapsize
 
