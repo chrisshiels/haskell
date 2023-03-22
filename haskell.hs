@@ -1,3 +1,9 @@
+range :: Integral a => a -> a -> [a]
+range m n =
+  if m == n then [ n ]
+  else m : range (m + 1) n
+
+
 map' :: (a -> b) -> [a] -> [b]
 map' _ [] = []
 map' f (x:xs) = f x : map' f xs
@@ -57,6 +63,14 @@ append' (x:xs) ys = x : append' xs ys
 
 reverse' :: [a] -> [a]
 reverse' xs = foldl' (\a e -> e : a) [] xs
+
+
+init' [ x ] = []
+init' (x:xs) = x : init' xs
+
+
+last' [ x ] = x
+last' (x:xs) = last' xs
 
 
 palindrome :: Eq a => [a] -> Bool
