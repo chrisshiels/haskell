@@ -1,3 +1,6 @@
+import Data.Monoid
+
+
 range :: Integral a => a -> a -> [a]
 range m n =
   if m == n then [ n ]
@@ -443,3 +446,51 @@ instance Applicative Maybe' where
 instance Monad Maybe' where
   Nothing' >>= _  = Nothing'
   Just' x >>= f   = f x
+
+
+data Probability = Probability String Double deriving (Eq, Show)
+
+
+heads = Probability "heads" 0.5
+tails = Probability "tails" 0.5
+
+
+combinestrings :: String -> String -> String
+combinestrings s1 "" = s1
+combinestrings "" s2 = s2
+combinestrings s1 s2 = s1 <> "-" <> s2
+
+
+-- class Semigroup a where
+--   (<>) :: a -> a -> a
+
+
+instance Semigroup Probability where
+  (<>) (Probability text1 double1) (Probability text2 double2) =
+    Probability (combinestrings text1 text2) (double1 * double2)
+
+
+luckycombine = heads <> heads <> heads
+-- => Probability "heads-heads-heads" 0.125
+
+
+-- class Semigroup a => Monoid a where
+--   mempty :: a
+--   mappend :: a -> a -> a
+--   mconcat :: [a] -> a
+
+
+instance Monoid Probability where
+  mempty = Probability "" 1
+
+
+luckymappend = heads `mappend` heads `mappend` heads
+-- => Probability "heads-heads-heads" 0.125
+
+
+luckymconcat = mconcat([ heads, heads, heads ])
+-- => Probability "heads-heads-heads" 0.125
+
+
+luckyfoldr = foldr (<>) mempty [ heads, heads, heads ]
+-- => Probability "heads-heads-heads" 0.125
