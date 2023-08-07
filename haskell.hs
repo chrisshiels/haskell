@@ -38,6 +38,11 @@ foldr' f v [] = v
 foldr' f v (x:xs) = f x (foldr' f v xs)
 
 
+elem' :: Eq a => a -> [ a ] -> Bool
+elem' v [] = False
+elem' v (x:xs) = if v == x then True else elem' v xs
+
+
 zip' :: [a] -> [b] -> [ (a, b) ]
 zip' [] _ = []
 zip' _ [] = []
