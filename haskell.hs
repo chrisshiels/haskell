@@ -74,7 +74,7 @@ flip' f x y = f y x
 
 
 reverse' :: [a] -> [a]
-reverse' xs = foldl' (\a e -> e : a) [] xs
+reverse' xs = foldl' (flip' (:)) [] xs
 
 
 init' [ x ] = []
