@@ -77,6 +77,10 @@ reverse' :: [a] -> [a]
 reverse' xs = foldl' (flip' (:)) [] xs
 
 
+concat' :: [[a]] -> [a]
+concat' xs = foldr (++) [] xs
+
+
 init' [ x ] = []
 init' (x:xs) = x : init' xs
 
