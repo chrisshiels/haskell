@@ -69,6 +69,10 @@ append' [] ys = ys
 append' (x:xs) ys = x : append' xs ys
 
 
+flip' :: (a -> b -> c) -> b -> a -> c
+flip' f x y = f y x
+
+
 reverse' :: [a] -> [a]
 reverse' xs = foldl' (\a e -> e : a) [] xs
 
